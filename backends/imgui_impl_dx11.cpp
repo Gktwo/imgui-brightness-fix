@@ -42,6 +42,9 @@
 #pragma comment(lib, "d3dcompiler") // Automatically link with d3dcompiler.lib as we are using D3DCompile() below.
 #endif
 
+// Color fix
+static bool g_NeedColorFixing = true;
+
 // DirectX11 data
 struct ImGui_ImplDX11_Data
 {
@@ -452,7 +455,7 @@ bool    ImGui_ImplDX11_CreateDeviceObjects()
 
     // Create the pixel shader
     {
-        static const char* pixelShader =
+        static const char* pixelShader = g_NeedColorFixing ?
             "struct PS_INPUT\
             {\
             float4 pos : SV_POSITION;\
@@ -464,8 +467,24 @@ bool    ImGui_ImplDX11_CreateDeviceObjects()
             \
             float4 main(PS_INPUT input) : SV_Target\
             {\
-            float4 out_col = input.col * texture0.Sample(sampler0, input.uv); \
-            return out_col; \
+            float4 out_col = input.col * texture0.Sample(sampler0, input.uv);\
+            out_col.xyz = pow(out_col.xyz, 2.2);\
+            return out_col;\
+            }"
+            :
+            "struct PS_INPUT\
+            {\
+            float4 pos : SV_POSITION;\
+            float4 col : COLOR0;\
+            float2 uv  : TEXCOORD0;\
+            };\
+            sampler sampler0;\
+            Texture2D texture0;\
+            \
+            float4 main(PS_INPUT input) : SV_Target\
+            {\
+            float4 out_col = input.col * texture0.Sample(sampler0, input.uv);\
+            return out_col;\
             }";
 
         ID3DBlob* pixelShaderBlob;
@@ -726,4 +745,9 @@ static void ImGui_ImplDX11_InitPlatformInterface()
 static void ImGui_ImplDX11_ShutdownPlatformInterface()
 {
     ImGui::DestroyPlatformWindows();
+}
+
+IMGUI_IMPL_API void ImGui_ImplDX11_DisableColorFixing()
+{
+    g_NeedColorFixing = false;
 }
