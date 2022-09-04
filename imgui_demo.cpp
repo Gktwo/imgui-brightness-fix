@@ -1848,7 +1848,7 @@ static void ShowDemoWindowWidgets()
             ImGui::SameLine();
 
             ImGui::BeginGroup(); // Lock X position
-            ImGui::Text("当前");
+            ImGui::Text("Current");
             ImGui::ColorButton("##current", color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
             ImGui::Text("Previous");
             if (ImGui::ColorButton("##previous", backup_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40)))
@@ -6174,10 +6174,10 @@ void ImGui::ShowFontSelector(const char* label)
     }
     ImGui::SameLine();
     HelpMarker(
-        u8"- 使用io.fonts->AddFontFromFileTTF（）加载其他字体.\n"
-        u8"- 字符集是在调用 io.Fonts->GetTexDataAsXXXX() or io.Fonts->Build().\n"
-        u8"- 阅读常见问题解答和文档/字体。md了解更多详细信息.\n"
-        u8"- 如果您需要在运行时添加/删除字体（例如DPI更改），请在执行NewFrame()前.");
+        "- Load additional fonts with io.Fonts->AddFontFromFileTTF().\n"
+        "- The font atlas is built when calling io.Fonts->GetTexDataAsXXXX() or io.Fonts->Build().\n"
+        "- Read FAQ and docs/FONTS.md for more details.\n"
+        "- If you need to add/remove fonts at runtime (e.g. for DPI change), do it before calling NewFrame().");
 }
 
 // Demo helper function to select among default colors. See ShowStyleEditor() for more advanced options.
@@ -6186,7 +6186,7 @@ void ImGui::ShowFontSelector(const char* label)
 bool ImGui::ShowStyleSelector(const char* label)
 {
     static int style_idx = -1;
-    if (ImGui::Combo(label, &style_idx, u8"暗黑\0明亮\0经典\0"))
+    if (ImGui::Combo(label, &style_idx, "Dark\0Light\0Classic\0"))
     {
         switch (style_idx)
         {
@@ -6217,82 +6217,82 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
 
     ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.50f);
 
-    if (ImGui::ShowStyleSelector(u8"颜色##Selector"))
+    if (ImGui::ShowStyleSelector("Colors##Selector"))
         ref_saved_style = style;
-    ImGui::ShowFontSelector(u8"字体##Selector");
+    ImGui::ShowFontSelector("Fonts##Selector");
 
     // Simplified Settings (expose floating-pointer border sizes as boolean representing 0.0f or 1.0f)
-    if (ImGui::SliderFloat(u8"框架环绕", &style.FrameRounding, 0.0f, 12.0f, "%.0f"))
+    if (ImGui::SliderFloat("FrameRounding", &style.FrameRounding, 0.0f, 12.0f, "%.0f"))
         style.GrabRounding = style.FrameRounding; // Make GrabRounding always the same value as FrameRounding
-    { bool border = (style.WindowBorderSize > 0.0f); if (ImGui::Checkbox(u8"窗口边界", &border)) { style.WindowBorderSize = border ? 1.0f : 0.0f; } }
+    { bool border = (style.WindowBorderSize > 0.0f); if (ImGui::Checkbox("WindowBorder", &border)) { style.WindowBorderSize = border ? 1.0f : 0.0f; } }
     ImGui::SameLine();
-    { bool border = (style.FrameBorderSize > 0.0f);  if (ImGui::Checkbox(u8"框边界",  &border)) { style.FrameBorderSize  = border ? 1.0f : 0.0f; } }
+    { bool border = (style.FrameBorderSize > 0.0f);  if (ImGui::Checkbox("FrameBorder",  &border)) { style.FrameBorderSize  = border ? 1.0f : 0.0f; } }
     ImGui::SameLine();
-    { bool border = (style.PopupBorderSize > 0.0f);  if (ImGui::Checkbox(u8"弹出边框",  &border)) { style.PopupBorderSize  = border ? 1.0f : 0.0f; } }
+    { bool border = (style.PopupBorderSize > 0.0f);  if (ImGui::Checkbox("PopupBorder",  &border)) { style.PopupBorderSize  = border ? 1.0f : 0.0f; } }
 
     // Save/Revert button
-    if (ImGui::Button(u8"保存 Ref"))
+    if (ImGui::Button("Save Ref"))
         *ref = ref_saved_style = style;
     ImGui::SameLine();
-    if (ImGui::Button(u8"还原 Ref"))
+    if (ImGui::Button("Revert Ref"))
         style = *ref;
     ImGui::SameLine();
     HelpMarker(
-        u8"在本地非永久存储中保存/还原。默认颜色定义不受影响. "
-        u8"使用下面的“导出”将它们保存到某个位置.");
+        "Save/Revert in local non-persistent storage. Default Colors definition are not affected. "
+        "Use \"Export\" below to save them somewhere.");
 
     ImGui::Separator();
 
     if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
     {
-        if (ImGui::BeginTabItem(u8"大小"))
+        if (ImGui::BeginTabItem("Sizes"))
         {
-            ImGui::Text(u8"主要的");
-            ImGui::SliderFloat2(u8"窗口填充", (float*)&style.WindowPadding, 0.0f, 20.0f, "%.0f");
-            ImGui::SliderFloat2(u8"框架填充", (float*)&style.FramePadding, 0.0f, 20.0f, "%.0f");
-            ImGui::SliderFloat2(u8"单元格填充", (float*)&style.CellPadding, 0.0f, 20.0f, "%.0f");
-            ImGui::SliderFloat2(u8"项目间距", (float*)&style.ItemSpacing, 0.0f, 20.0f, "%.0f");
-            ImGui::SliderFloat2(u8"项目内部间距", (float*)&style.ItemInnerSpacing, 0.0f, 20.0f, "%.0f");
-            ImGui::SliderFloat2(u8"触摸额外填充", (float*)&style.TouchExtraPadding, 0.0f, 10.0f, "%.0f");
-            ImGui::SliderFloat(u8"缩进间距", &style.IndentSpacing, 0.0f, 30.0f, "%.0f");
-            ImGui::SliderFloat(u8"滚动条大小", &style.ScrollbarSize, 1.0f, 20.0f, "%.0f");
-            ImGui::SliderFloat(u8"抓取最小尺寸", &style.GrabMinSize, 1.0f, 20.0f, "%.0f");
-            ImGui::Text(u8"边界");
-            ImGui::SliderFloat(u8"窗口边框大小", &style.WindowBorderSize, 0.0f, 1.0f, "%.0f");
-            ImGui::SliderFloat(u8"子边框大小", &style.ChildBorderSize, 0.0f, 1.0f, "%.0f");
-            ImGui::SliderFloat(u8"弹出边框大小", &style.PopupBorderSize, 0.0f, 1.0f, "%.0f");
-            ImGui::SliderFloat(u8"框架边框大小", &style.FrameBorderSize, 0.0f, 1.0f, "%.0f");
-            ImGui::SliderFloat(u8"选项卡边框大小", &style.TabBorderSize, 0.0f, 1.0f, "%.0f");
-            ImGui::Text(u8"环绕");
-            ImGui::SliderFloat(u8"窗口环绕", &style.WindowRounding, 0.0f, 12.0f, "%.0f");
-            ImGui::SliderFloat(u8"子窗口环绕", &style.ChildRounding, 0.0f, 12.0f, "%.0f");
-            ImGui::SliderFloat(u8"框架环绕", &style.FrameRounding, 0.0f, 12.0f, "%.0f");
-            ImGui::SliderFloat(u8"弹出窗口环绕", &style.PopupRounding, 0.0f, 12.0f, "%.0f");
-            ImGui::SliderFloat(u8"滚动条环绕", &style.ScrollbarRounding, 0.0f, 12.0f, "%.0f");
-            ImGui::SliderFloat(u8"抓取环绕", &style.GrabRounding, 0.0f, 12.0f, "%.0f");
-            ImGui::SliderFloat(u8"日志滑块死区", &style.LogSliderDeadzone, 0.0f, 12.0f, "%.0f");
-            ImGui::SliderFloat(u8"标签环绕", &style.TabRounding, 0.0f, 12.0f, "%.0f");
-            ImGui::Text(u8"对齐");
-            ImGui::SliderFloat2(u8"窗口标题对齐", (float*)&style.WindowTitleAlign, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Main");
+            ImGui::SliderFloat2("WindowPadding", (float*)&style.WindowPadding, 0.0f, 20.0f, "%.0f");
+            ImGui::SliderFloat2("FramePadding", (float*)&style.FramePadding, 0.0f, 20.0f, "%.0f");
+            ImGui::SliderFloat2("CellPadding", (float*)&style.CellPadding, 0.0f, 20.0f, "%.0f");
+            ImGui::SliderFloat2("ItemSpacing", (float*)&style.ItemSpacing, 0.0f, 20.0f, "%.0f");
+            ImGui::SliderFloat2("ItemInnerSpacing", (float*)&style.ItemInnerSpacing, 0.0f, 20.0f, "%.0f");
+            ImGui::SliderFloat2("TouchExtraPadding", (float*)&style.TouchExtraPadding, 0.0f, 10.0f, "%.0f");
+            ImGui::SliderFloat("IndentSpacing", &style.IndentSpacing, 0.0f, 30.0f, "%.0f");
+            ImGui::SliderFloat("ScrollbarSize", &style.ScrollbarSize, 1.0f, 20.0f, "%.0f");
+            ImGui::SliderFloat("GrabMinSize", &style.GrabMinSize, 1.0f, 20.0f, "%.0f");
+            ImGui::Text("Borders");
+            ImGui::SliderFloat("WindowBorderSize", &style.WindowBorderSize, 0.0f, 1.0f, "%.0f");
+            ImGui::SliderFloat("ChildBorderSize", &style.ChildBorderSize, 0.0f, 1.0f, "%.0f");
+            ImGui::SliderFloat("PopupBorderSize", &style.PopupBorderSize, 0.0f, 1.0f, "%.0f");
+            ImGui::SliderFloat("FrameBorderSize", &style.FrameBorderSize, 0.0f, 1.0f, "%.0f");
+            ImGui::SliderFloat("TabBorderSize", &style.TabBorderSize, 0.0f, 1.0f, "%.0f");
+            ImGui::Text("Rounding");
+            ImGui::SliderFloat("WindowRounding", &style.WindowRounding, 0.0f, 12.0f, "%.0f");
+            ImGui::SliderFloat("ChildRounding", &style.ChildRounding, 0.0f, 12.0f, "%.0f");
+            ImGui::SliderFloat("FrameRounding", &style.FrameRounding, 0.0f, 12.0f, "%.0f");
+            ImGui::SliderFloat("PopupRounding", &style.PopupRounding, 0.0f, 12.0f, "%.0f");
+            ImGui::SliderFloat("ScrollbarRounding", &style.ScrollbarRounding, 0.0f, 12.0f, "%.0f");
+            ImGui::SliderFloat("GrabRounding", &style.GrabRounding, 0.0f, 12.0f, "%.0f");
+            ImGui::SliderFloat("LogSliderDeadzone", &style.LogSliderDeadzone, 0.0f, 12.0f, "%.0f");
+            ImGui::SliderFloat("TabRounding", &style.TabRounding, 0.0f, 12.0f, "%.0f");
+            ImGui::Text("Alignment");
+            ImGui::SliderFloat2("WindowTitleAlign", (float*)&style.WindowTitleAlign, 0.0f, 1.0f, "%.2f");
             int window_menu_button_position = style.WindowMenuButtonPosition + 1;
-            if (ImGui::Combo(u8"窗口菜单按钮位置", (int*)&window_menu_button_position, u8"无\0左\0右\0"))
+            if (ImGui::Combo("WindowMenuButtonPosition", (int*)&window_menu_button_position, "None\0Left\0Right\0"))
                 style.WindowMenuButtonPosition = window_menu_button_position - 1;
-            ImGui::Combo(u8"颜色按钮位置", (int*)&style.ColorButtonPosition, u8"左\0右\0");
-            ImGui::SliderFloat2(u8"按钮文本对齐", (float*)&style.ButtonTextAlign, 0.0f, 1.0f, "%.2f");
-            ImGui::SameLine(); HelpMarker(u8"当按钮大于其文本内容时，将应用对齐.");
-            ImGui::SliderFloat2(u8"可选择的文本对齐方式", (float*)&style.SelectableTextAlign, 0.0f, 1.0f, "%.2f");
-            ImGui::SameLine(); HelpMarker(u8"当可选项大于其文本内容时，将应用对齐.");
-            ImGui::Text(u8"安全区域填充");
-            ImGui::SameLine(); HelpMarker(u8"如果您看不到屏幕边缘（例如，在未配置缩放的电视上），请进行调整).");
-            ImGui::SliderFloat2(u8"显示安全区域填充", (float*)&style.DisplaySafeAreaPadding, 0.0f, 30.0f, "%.0f");
+            ImGui::Combo("ColorButtonPosition", (int*)&style.ColorButtonPosition, "Left\0Right\0");
+            ImGui::SliderFloat2("ButtonTextAlign", (float*)&style.ButtonTextAlign, 0.0f, 1.0f, "%.2f");
+            ImGui::SameLine(); HelpMarker("Alignment applies when a button is larger than its text content.");
+            ImGui::SliderFloat2("SelectableTextAlign", (float*)&style.SelectableTextAlign, 0.0f, 1.0f, "%.2f");
+            ImGui::SameLine(); HelpMarker("Alignment applies when a selectable is larger than its text content.");
+            ImGui::Text("Safe Area Padding");
+            ImGui::SameLine(); HelpMarker("Adjust if you cannot see the edges of your screen (e.g. on a TV where scaling has not been configured).");
+            ImGui::SliderFloat2("DisplaySafeAreaPadding", (float*)&style.DisplaySafeAreaPadding, 0.0f, 30.0f, "%.0f");
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem(u8"颜色"))
+        if (ImGui::BeginTabItem("Colors"))
         {
             static int output_dest = 0;
             static bool output_only_modified = true;
-            if (ImGui::Button(u8"导出"))
+            if (ImGui::Button("Export"))
             {
                 if (output_dest == 0)
                     ImGui::LogToClipboard();
@@ -6309,20 +6309,20 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
                 }
                 ImGui::LogFinish();
             }
-            ImGui::SameLine(); ImGui::SetNextItemWidth(120); ImGui::Combo("##output_type", &output_dest, u8"到剪贴板\0To TTY\0");
-            ImGui::SameLine(); ImGui::Checkbox(u8"仅修改颜色", &output_only_modified);
+            ImGui::SameLine(); ImGui::SetNextItemWidth(120); ImGui::Combo("##output_type", &output_dest, "To Clipboard\0To TTY\0");
+            ImGui::SameLine(); ImGui::Checkbox("Only Modified Colors", &output_only_modified);
 
             static ImGuiTextFilter filter;
-            filter.Draw(u8"颜色过滤器", ImGui::GetFontSize() * 16);
+            filter.Draw("Filter colors", ImGui::GetFontSize() * 16);
 
             static ImGuiColorEditFlags alpha_flags = 0;
-            if (ImGui::RadioButton(u8"不透明的", alpha_flags == ImGuiColorEditFlags_None))             { alpha_flags = ImGuiColorEditFlags_None; } ImGui::SameLine();
-            if (ImGui::RadioButton(u8"透明的",  alpha_flags == ImGuiColorEditFlags_AlphaPreview))     { alpha_flags = ImGuiColorEditFlags_AlphaPreview; } ImGui::SameLine();
-            if (ImGui::RadioButton(u8"二者都",   alpha_flags == ImGuiColorEditFlags_AlphaPreviewHalf)) { alpha_flags = ImGuiColorEditFlags_AlphaPreviewHalf; } ImGui::SameLine();
+            if (ImGui::RadioButton("Opaque", alpha_flags == ImGuiColorEditFlags_None))             { alpha_flags = ImGuiColorEditFlags_None; } ImGui::SameLine();
+            if (ImGui::RadioButton("Alpha",  alpha_flags == ImGuiColorEditFlags_AlphaPreview))     { alpha_flags = ImGuiColorEditFlags_AlphaPreview; } ImGui::SameLine();
+            if (ImGui::RadioButton("Both",   alpha_flags == ImGuiColorEditFlags_AlphaPreviewHalf)) { alpha_flags = ImGuiColorEditFlags_AlphaPreviewHalf; } ImGui::SameLine();
             HelpMarker(
-                u8"在颜色列表中:\n"
-                u8"左键单击颜色方块以打开颜色选择器,\n"
-                u8"右键单击打开“编辑选项”菜单.");
+                "In the color list:\n"
+                "Left-click on color square to open color picker,\n"
+                "Right-click to open edit options menu.");
 
             ImGui::BeginChild("##colors", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NavFlattened);
             ImGui::PushItemWidth(-160);
@@ -6351,7 +6351,7 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem(u8"字体"))
+        if (ImGui::BeginTabItem("Fonts"))
         {
             ImGuiIO& io = ImGui::GetIO();
             ImFontAtlas* atlas = io.Fonts;
@@ -6369,31 +6369,31 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
                 "Using those settings here will give you poor quality results.");
             static float window_scale = 1.0f;
             ImGui::PushItemWidth(ImGui::GetFontSize() * 8);
-            if (ImGui::DragFloat(u8"窗口比例", &window_scale, 0.005f, MIN_SCALE, MAX_SCALE, "%.2f", ImGuiSliderFlags_AlwaysClamp)) // Scale only this window
+            if (ImGui::DragFloat("window scale", &window_scale, 0.005f, MIN_SCALE, MAX_SCALE, "%.2f", ImGuiSliderFlags_AlwaysClamp)) // Scale only this window
                 ImGui::SetWindowFontScale(window_scale);
-            ImGui::DragFloat(u8"全局比例", &io.FontGlobalScale, 0.005f, MIN_SCALE, MAX_SCALE, "%.2f", ImGuiSliderFlags_AlwaysClamp); // Scale everything
+            ImGui::DragFloat("global scale", &io.FontGlobalScale, 0.005f, MIN_SCALE, MAX_SCALE, "%.2f", ImGuiSliderFlags_AlwaysClamp); // Scale everything
             ImGui::PopItemWidth();
 
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem(u8"渲染"))
+        if (ImGui::BeginTabItem("Rendering"))
         {
-            ImGui::Checkbox(u8"抗锯齿线", &style.AntiAliasedLines);
+            ImGui::Checkbox("Anti-aliased lines", &style.AntiAliasedLines);
             ImGui::SameLine();
-            HelpMarker(u8"禁用抗锯齿线时，可能还需要禁用样式中的边框.");
+            HelpMarker("When disabling anti-aliasing lines, you'll probably want to disable borders in your style as well.");
 
-            ImGui::Checkbox(u8"使用纹理的抗锯齿线", &style.AntiAliasedLinesUseTex);
+            ImGui::Checkbox("Anti-aliased lines use texture", &style.AntiAliasedLinesUseTex);
             ImGui::SameLine();
-            HelpMarker(u8"使用纹理数据的更快线条。要求后端使用双线性过滤（而不是点/最近过滤）进行渲染).");
+            HelpMarker("Faster lines using texture data. Require backend to render with bilinear filtering (not point/nearest filtering).");
 
-            ImGui::Checkbox(u8"抗锯齿填充", &style.AntiAliasedFill);
+            ImGui::Checkbox("Anti-aliased fill", &style.AntiAliasedFill);
             ImGui::PushItemWidth(ImGui::GetFontSize() * 8);
-            ImGui::DragFloat(u8"曲线镶嵌公差", &style.CurveTessellationTol, 0.02f, 0.10f, 10.0f, "%.2f");
+            ImGui::DragFloat("Curve Tessellation Tolerance", &style.CurveTessellationTol, 0.02f, 0.10f, 10.0f, "%.2f");
             if (style.CurveTessellationTol < 0.10f) style.CurveTessellationTol = 0.10f;
 
             // When editing the "Circle Segment Max Error" value, draw a preview of its effect on auto-tessellated circles.
-            ImGui::DragFloat(u8"圆细分最大误差", &style.CircleTessellationMaxError , 0.005f, 0.10f, 5.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+            ImGui::DragFloat("Circle Tessellation Max Error", &style.CircleTessellationMaxError , 0.005f, 0.10f, 5.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
             if (ImGui::IsItemActive())
             {
                 ImGui::SetNextWindowPos(ImGui::GetCursorScreenPos());
@@ -6434,8 +6434,8 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
             ImGui::SameLine();
             HelpMarker("When drawing circle primitives with \"num_segments == 0\" tesselation will be calculated automatically.");
 
-            ImGui::DragFloat(u8"全局透明度", &style.Alpha, 0.005f, 0.20f, 1.0f, "%.2f"); // Not exposing zero here so user doesn't "lose" the UI (zero alpha clips all widgets). But application code could have a toggle to switch between zero and non-zero.
-            ImGui::DragFloat(u8"未激活项透明度", &style.DisabledAlpha, 0.005f, 0.0f, 1.0f, "%.2f"); ImGui::SameLine(); HelpMarker("Additional alpha multiplier for disabled items (multiply over current value of Alpha).");
+            ImGui::DragFloat("Global Alpha", &style.Alpha, 0.005f, 0.20f, 1.0f, "%.2f"); // Not exposing zero here so user doesn't "lose" the UI (zero alpha clips all widgets). But application code could have a toggle to switch between zero and non-zero.
+            ImGui::DragFloat("Disabled Alpha", &style.DisabledAlpha, 0.005f, 0.0f, 1.0f, "%.2f"); ImGui::SameLine(); HelpMarker("Additional alpha multiplier for disabled items (multiply over current value of Alpha).");
             ImGui::PopItemWidth();
 
             ImGui::EndTabItem();
@@ -6529,7 +6529,7 @@ static void ShowExampleMenuFile()
     }
 
     IMGUI_DEMO_MARKER("Examples/Menu/Colors");
-    if (ImGui::BeginMenu(u8"颜色"))
+    if (ImGui::BeginMenu("Colors"))
     {
         float sz = ImGui::GetTextLineHeight();
         for (int i = 0; i < ImGuiCol_COUNT; i++)
